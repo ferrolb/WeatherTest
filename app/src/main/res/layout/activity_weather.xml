@@ -5,4 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".WeatherActivity">
 
+    <fragment android:name="com.langiappeworkshop.weathertest.WeatherFragment"
+        android:id="@+id/daylist_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout="@layout/fragment_weather">
+    </fragment>
+
 </FrameLayout>
