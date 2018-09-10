@@ -8,10 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class WeatherFragment extends Fragment {
@@ -36,9 +36,9 @@ public class WeatherFragment extends Fragment {
      */
     private class DaysAdapter extends RecyclerView.Adapter<DayViewHolder>{
 
-        private List<String> tenDaysWeather;
+        private List<Day> tenDaysWeather;
 
-        public DaysAdapter(@NonNull List<String> tenDaysWeather ) {
+        public DaysAdapter(@NonNull List<Day> tenDaysWeather ) {
             this.tenDaysWeather = tenDaysWeather;
         }
 
@@ -51,7 +51,7 @@ public class WeatherFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull DayViewHolder holder, int position) {
-            String todaysWeather = tenDaysWeather.get(position);
+            Day todaysWeather = tenDaysWeather.get(position);
             holder.bind(todaysWeather);
         }
 
@@ -65,23 +65,62 @@ public class WeatherFragment extends Fragment {
      *  Our ViewHolder for view items associated with our 10 days of weather.
      */
     private class DayViewHolder extends RecyclerView.ViewHolder {
-        public TextView dayView;
-        public String todaysWeather;
+
+        private ImageView ivIcon;
+        private TextView tvDate;
+        private TextView tvSummary;
+        private TextView tvPrecip;
+        private TextView tvLo;
+        private TextView tvHi;
+        private TextView tvHumid;
+        private TextView tvWind;
+
+        public Day todaysWeather;
+
         public DayViewHolder(View dayView) {
-                super(dayView);
-                this.dayView = dayView.findViewById(R.id.day_list_tv);
+            super(dayView);
+            ivIcon = dayView.findViewById(R.id.ivIcon);
+            tvDate = dayView.findViewById(R.id.tvDate);
+            tvSummary = dayView.findViewById(R.id.tvSummary);
+            tvPrecip = dayView.findViewById(R.id.tvPrecip);
+            tvLo = dayView.findViewById(R.id.tvLo);
+            tvHi = dayView.findViewById(R.id.tvHi);
+            tvHumid = dayView.findViewById(R.id.tvHumid);
+            tvWind = dayView.findViewById(R.id.tvWind);
         }
 
-        public void bind(String todaysWeather) {
+        public void bind(Day todaysWeather) {
             this.todaysWeather = todaysWeather;
-            dayView.setText(this.todaysWeather);
+
+            tvSummary.setText(todaysWeather.summary);
+            tvDate.setText(todaysWeather.date);
+            tvPrecip.setText(todaysWeather.precip);
+            tvLo.setText(todaysWeather.lo);
+            tvHi.setText(todaysWeather.hi);
+            tvHumid.setText(todaysWeather.humid);
+            tvWind.setText(todaysWeather.wind);
         }
     }
 
     private void updateUI() {
-        List<String> tenDaysWeatherList = new ArrayList<>(Arrays.asList("Cloudy", "Cloudy","Rainy", "Clear","Clear","Cloudy", "Cloudy","Rainy", "Clear","Clear"));
-        daysAdapter = new DaysAdapter(tenDaysWeatherList);
-        dayListRecyclerView.setAdapter(daysAdapter);
+        // TODO: remove this once we have our data loader class
+        List<Day> tenDaysWeatherList = new ArrayList<>();
+        Day day = new Day(R.mipmap.ic_launcher, "", "Monday 9/10/2018",
+                "Chance of a Thunderstorm", "Precip: 60%", "Lo: 69", "Hi: 84", "Humid: 76%", "Wind: 7 SW");
+        tenDaysWeatherList.add(day);
+        day = new Day(R.mipmap.ic_launcher, "", "Monday 9/11/2018",
+                "Chance of a Thunderstorm", "Precip: 80%", "Lo: 71", "Hi: 87", "Humid: 72", "Wind: 4 WNW");
+        tenDaysWeatherList.add(day);
+        day = new Day(R.mipmap.ic_launcher, "", "Monday 9/12/2018",
+                "Chance of a Thunderstorm", "Precip: 40%", "Lo: 71", "Hi: 88", "Humid: 72%", "Wind: 5 ENE");
+        tenDaysWeatherList.add(day);
 
+        // TODO: put empty/null check for data here later
+
+        // check if fragment has been added to Activity before we setup the RecyclerView
+        if (isAdded()) {
+            daysAdapter = new DaysAdapter(tenDaysWeatherList);
+            dayListRecyclerView.setAdapter(daysAdapter);
+        }
     }
 }
