@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,8 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 public class WeatherFragment extends Fragment {
@@ -95,14 +97,25 @@ public class WeatherFragment extends Fragment {
 
         public void bind(Day todaysWeather) {
             this.todaysWeather = todaysWeather;
+            if (!TextUtils.isEmpty(this.todaysWeather.imageURL)) {
 
-            tvSummary.setText(todaysWeather.summary);
-            tvDate.setText(todaysWeather.date);
-            tvPrecip.setText(todaysWeather.precip);
-            tvLo.setText(todaysWeather.lo);
-            tvHi.setText(todaysWeather.hi);
-            tvHumid.setText(todaysWeather.humid);
-            tvWind.setText(todaysWeather.wind);
+                // we are using Picasso library to load individual images because
+                // that's what it's made for!
+                Picasso.with(getActivity())
+                        .load(this.todaysWeather.imageURL)
+                        .placeholder(this.todaysWeather.imageResourceId)
+                        .into(ivIcon);
+            } else {
+                // if we get an empty image URL, just default to Andy
+                ivIcon.setImageResource(this.todaysWeather.imageResourceId);
+            }
+            tvSummary.setText(this.todaysWeather.summary);
+            tvDate.setText(this.todaysWeather.date);
+            tvPrecip.setText(this.todaysWeather.precip);
+            tvLo.setText(this.todaysWeather.lo);
+            tvHi.setText(this.todaysWeather.hi);
+            tvHumid.setText(this.todaysWeather.humid);
+            tvWind.setText(this.todaysWeather.wind);
         }
     }
 
