@@ -1,5 +1,6 @@
 package com.langiappeworkshop.weathertest;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ public class WeatherFragment extends Fragment {
 
     private RecyclerView dayListRecyclerView;
     private DaysAdapter daysAdapter;
+    private List<Day> tenDaysWeather;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -27,6 +29,8 @@ public class WeatherFragment extends Fragment {
         dayListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         updateUI();
+
+        new DownloadDaysTask().execute();
 
         return rootView;
     }
@@ -103,12 +107,31 @@ public class WeatherFragment extends Fragment {
     }
 
     private void updateUI() {
-        // TODO: put empty/null check for data here later
 
-        // check if fragment has been added to Activity before we setup the RecyclerView
-        if (isAdded()) {
-            daysAdapter = new DaysAdapter(Downloader.fetchDays());
-            dayListRecyclerView.setAdapter(daysAdapter);
+        if (tenDaysWeather!=null && !tenDaysWeather.isEmpty()) {
+            // check if fragment has been added to Activity before we setup the RecyclerView
+            if (isAdded()) {
+                daysAdapter = new DaysAdapter(tenDaysWeather);
+                dayListRecyclerView.setAdapter(daysAdapter);
+            }
+        }
+    }
+
+    /**
+     *  This class {@link DownloadDaysTask} takes our networking work off the main thread.
+     *  It returns a list of daily weather conditions {@link Day} and sets up the RecyclerView on completion.
+     */
+    private class DownloadDaysTask extends AsyncTask<Void, Void, List<Day>> {
+
+        @Override
+        protected List<Day> doInBackground(Void... voids) {
+            return Downloader.fetchDays();
+        }
+
+        @Override
+        protected void onPostExecute(List<Day> days) {
+            tenDaysWeather = days;
+            updateUI();
         }
     }
 }
