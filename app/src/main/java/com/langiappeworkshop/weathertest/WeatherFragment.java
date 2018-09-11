@@ -1,5 +1,6 @@
 package com.langiappeworkshop.weathertest;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,7 +21,6 @@ import java.util.List;
 public class WeatherFragment extends Fragment {
 
     private RecyclerView dayListRecyclerView;
-    private DaysAdapter daysAdapter;
     private List<Day> tenDaysWeather;
 
     @Override
@@ -44,7 +44,7 @@ public class WeatherFragment extends Fragment {
 
         private List<Day> tenDaysWeather;
 
-        public DaysAdapter(@NonNull List<Day> tenDaysWeather ) {
+        DaysAdapter(@NonNull List<Day> tenDaysWeather) {
             this.tenDaysWeather = tenDaysWeather;
         }
 
@@ -81,9 +81,9 @@ public class WeatherFragment extends Fragment {
         private TextView tvHumid;
         private TextView tvWind;
 
-        public Day todaysWeather;
+        Day todaysWeather;
 
-        public DayViewHolder(View dayView) {
+        DayViewHolder(View dayView) {
             super(dayView);
             ivIcon = dayView.findViewById(R.id.ivIcon);
             tvDate = dayView.findViewById(R.id.tvDate);
@@ -124,7 +124,7 @@ public class WeatherFragment extends Fragment {
         if (tenDaysWeather!=null && !tenDaysWeather.isEmpty()) {
             // check if fragment has been added to Activity before we setup the RecyclerView
             if (isAdded()) {
-                daysAdapter = new DaysAdapter(tenDaysWeather);
+                DaysAdapter daysAdapter = new DaysAdapter(tenDaysWeather);
                 dayListRecyclerView.setAdapter(daysAdapter);
             }
         }
@@ -134,6 +134,7 @@ public class WeatherFragment extends Fragment {
      *  This class {@link DownloadDaysTask} takes our networking work off the main thread.
      *  It returns a list of daily weather conditions {@link Day} and sets up the RecyclerView on completion.
      */
+    @SuppressLint("StaticFieldLeak")
     private class DownloadDaysTask extends AsyncTask<Void, Void, List<Day>> {
 
         @Override
